@@ -34,7 +34,7 @@ public class BoardController {
         return boardService.updateBoard(id,requestDto);
     }
 
-    @DeleteMapping("/api/board/{id}")
+    @DeleteMapping("/api/board/{id}")1
     public String deleteBoard(@PathVariable Long id,@RequestBody BoardRequestDto requestDto){
         return boardService.deleteBoard(id,requestDto);
     }
