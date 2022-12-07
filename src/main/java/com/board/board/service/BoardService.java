@@ -3,12 +3,17 @@ package com.board.board.service;
 import com.board.board.dto.BoardRequestDto;
 import com.board.board.dto.BoardResponseDto;
 import com.board.board.entity.Board;
+import com.board.board.entity.User;
+import com.board.board.jwt.JwtUtil;
 import com.board.board.repository.BoardRepository;
+import com.board.board.repository.UserRepository;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -17,15 +22,41 @@ public class BoardService {
     //실제로 데이터를 뭔가 로직을 작성하고 연결하는부분을 Service임
 
     private final BoardRepository boardRepository;
+    private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
     //데이터와 연결을 할수있게해주는 BoardRepository추가한것
-    @Transactional
-    public BoardResponseDto createBoard(BoardRequestDto requestDto2) {
-        Board board = new Board(requestDto2);
-        //requestDto생성자를 사용해 객체를 만들어줌
-        boardRepository.save(board);
-        return new BoardResponseDto(board);
-    }
 
+    @Transactional
+    public BoardResponseDto createBoard(BoardRequestDto requestDto, HttpServletRequest request) {
+        // request에서 Token 가져오기
+        String token = jwtUtil.resolveToken(request);
+                        //jwtUtil에 있는 resolveToken메서드를 돌리고 값을 request를 준다. 토큰을 가져오는 메서드
+                        //그값을 token에 준다
+        // 토큰이 있는 경우에만 관심상품 추가 가능
+        Claims claims;
+        if (token != null) {//token이 null이아닐때
+            if (jwtUtil.validateToken(token)) { //validateToken메서드를 실행한다.  토큰을 검증하는 단계
+                // 토큰에서 사용자 정보 가져오기
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new IllegalArgumentException("Token Error");
+            }
+
+            // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
+            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+                    () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
+            );
+
+            // 요청받은 DTO 로 DB에 저장할 객체 만들기
+            Board board = boardRepository.saveAndFlush(new Board(requestDto, user.getId()));
+
+            return new BoardResponseDto(board);
+        } else {
+            return null;
+        }
+    }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
     //전체 조회
     @Transactional(readOnly = true)
     public List<BoardResponseDto> getBoardlist() {
@@ -46,6 +77,7 @@ public class BoardService {
         }
         return new BoardResponseDto(board);
     }
+    ////
     @Transactional
     public String deleteBoard(Long id,BoardRequestDto requestDto) {
         Board board = boardRepository.findById(id).orElseThrow(
