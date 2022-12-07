@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BoardRequestDto { //BoardRequestDto라는 객체 생성
-        private String username;
+//        private String username;
         private String contents;
         private String title;
-        private String password;
+//        private String password;
     }

@@ -19,7 +19,7 @@ public class BoardController {
 
     private final BoardService boardService;
     //
-    @PostMapping("/board/")
+    @PostMapping("/board")
     public BoardResponseDto createBoard(@RequestBody BoardRequestDto requestDto, HttpServletRequest request) {
         return boardService.createBoard(requestDto, request);
     }
@@ -29,20 +29,20 @@ public class BoardController {
         return boardService.getBoardlist();
     }
     //업데이트
-    @PutMapping("/board/{id}")
-    public BoardResponseDto updateBoard(@PathVariable Long id,@RequestBody BoardRequestDto requestDto){
-        return boardService.updateBoard(id,requestDto);
-    }
-    //삭제
-    @DeleteMapping("/board/{id}")
-    public String deleteBoard(@PathVariable Long id,@RequestBody BoardRequestDto requestDto){
-        return boardService.deleteBoard(id,requestDto);
-    }
-    //아이디에 따른 조회
-    @GetMapping("/board/{id}")
-    public BoardResponseDto selectMemo(@PathVariable Long id) {
-        return boardService.selectMemo(id);
-    }
+//    @PutMapping("/board/{id}")
+//    public BoardResponseDto updateBoard(@PathVariable Long id,@RequestBody BoardRequestDto requestDto){
+//        return boardService.updateBoard(id,requestDto);
+//    }
+//    //삭제
+//    @DeleteMapping("/board/{id}")
+//    public String deleteBoard(@PathVariable Long id,@RequestBody BoardRequestDto requestDto){
+//        return boardService.deleteBoard(id,requestDto);
+//    }
+//    //아이디에 따른 조회
+//    @GetMapping("/board/{id}")
+//    public BoardResponseDto selectMemo(@PathVariable Long id) {
+//        return boardService.selectMemo(id);
+//    }
 }
 
 

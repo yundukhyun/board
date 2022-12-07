@@ -48,7 +48,7 @@ public class BoardService {
             );
 
             // 요청받은 DTO 로 DB에 저장할 객체 만들기
-            Board board = boardRepository.saveAndFlush(new Board(requestDto, user.getId()));
+            Board board = boardRepository.saveAndFlush(new Board(requestDto, user.getUsername()));
 
             return new BoardResponseDto(board);
         } else {
@@ -56,49 +56,51 @@ public class BoardService {
         }
     }
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    
+
     //전체 조회
     @Transactional(readOnly = true)
     public List<BoardResponseDto> getBoardlist() {
         return boardRepository.findAllByOrderByModifiedAtDesc();
     }
-    @Transactional
-    public BoardResponseDto updateBoard(Long id, BoardRequestDto requestDto) {
-        Board board = boardRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("없는글입니다.")
-        );
-        boolean passwordTrue = requestDto.getPassword().equals(board.getPassword());
-        if(passwordTrue){
-            board.update(requestDto);
-            System.out.println("성공");
-        }
-        else{
-            System.out.println("비밀번호가 틀립니다.");
-        }
-        return new BoardResponseDto(board);
-    }
-    ////
-    @Transactional
-    public String deleteBoard(Long id,BoardRequestDto requestDto) {
-        Board board = boardRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("없는글입니다.")
-        );
-        boolean passwordTrue = requestDto.getPassword().equals(board.getPassword());
-        String a = "";
-        if(passwordTrue){
-            boardRepository.deleteById(id);
-            a= "삭제완료";
-        }else{
-            a = "비밀번호를 확인해주세요";
-        }
 
-        return a;
-    }
-    @Transactional(readOnly = true)
-    public BoardResponseDto selectMemo(Long id) {
-        Board board = boardRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("없는글입니다.")
-        );
-        return new BoardResponseDto(board);
-    }
+    //업데이트
+//        @Transactional
+//    public BoardResponseDto updateBoard(Long id, BoardRequestDto requestDto) {
+//        Board board = boardRepository.findById(id).orElseThrow(
+//                () -> new IllegalArgumentException("없는글입니다.")
+//        );
+//        boolean passwordTrue = requestDto.getPassword().equals(board.getPassword());
+//        if(passwordTrue){
+//            board.update(requestDto);
+//            System.out.println("성공");
+//        }
+//        else{
+//            System.out.println("비밀번호가 틀립니다.");
+//        }
+//        return new BoardResponseDto(board);
+//    }
+//    //
+//    @Transactional
+//    public String deleteBoard(Long id,BoardRequestDto requestDto) {
+//        Board board = boardRepository.findById(id).orElseThrow(
+//                () -> new IllegalArgumentException("없는글입니다.")
+//        );
+//        boolean passwordTrue = requestDto.getPassword().equals(board.getPassword());
+//        String a = "";
+//        if(passwordTrue){
+//            boardRepository.deleteById(id);
+//            a= "삭제완료";
+//        }else{
+//            a = "비밀번호를 확인해주세요";
+//        }
+//
+//        return a;
+//    }
+//    @Transactional(readOnly = true)
+//    public BoardResponseDto selectMemo(Long id) {
+//        Board board = boardRepository.findById(id).orElseThrow(
+//                () -> new IllegalArgumentException("없는글입니다.")
+//        );
+//        return new BoardResponseDto(board);
+//    }
 }
