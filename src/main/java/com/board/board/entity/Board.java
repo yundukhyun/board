@@ -17,26 +17,21 @@ public class Board extends Timestamped{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id; //PK id;
-
-    @Column(nullable = false)
-    private String username;   //필드값
-
+    //필드값
     @Column(nullable = false)
     private String contents;   // 필드값
 
     @Column(nullable = false)
     private String title;      //필드값
-
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "USER_ID")
     private User user;
 
-    public Board(BoardRequestDto requestDto, String username) { //requestDto생성자의 요소
-        this.username =username;
+
+    public Board(BoardRequestDto requestDto,User user) { //requestDto생성자의 요소
         this.contents = requestDto.getContents();
         this.title = requestDto.getTitle();
-//        this.password = requestDto.getPassword();
-
+        this.user = user;
     }
 
 //    public void update(BoardRequestDto requestDto) {

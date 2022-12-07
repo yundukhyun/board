@@ -44,13 +44,17 @@ public class BoardService {
 
             // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
             User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+                                                        //토큰안에 있는 유저네임
                     () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
             );
-
+            //User user = User타입의 user객체안에 userRepository.findByUsername(claims.getSubject())을 넣는다
+//            Product product = productRepository.saveAndFlush(new Product(requestDto, user.getId()));
             // 요청받은 DTO 로 DB에 저장할 객체 만들기
-            Board board = boardRepository.saveAndFlush(new Board(requestDto, user.getUsername()));
+            Board board = new Board(requestDto,user);
+                //board - contents title username password id
 
-            return new BoardResponseDto(board);
+            boardRepository.save(board);
+            return new BoardResponseDto(board, user.getUsername());
         } else {
             return null;
         }
