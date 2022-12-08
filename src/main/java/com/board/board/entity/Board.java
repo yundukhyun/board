@@ -22,16 +22,19 @@ public class Board extends Timestamped{
     private String contents;   // 필드값
 
     @Column(nullable = false)
+    private String username;
+    @Column(nullable = false)
     private String title;      //필드값
     @ManyToOne
     @JoinColumn(name = "USER_ID")
     private User user;
 
 
-    public Board(BoardRequestDto requestDto,User user) { //requestDto생성자의 요소
+    public Board(BoardRequestDto requestDto,User user,String username) { //requestDto생성자의 요소
         this.contents = requestDto.getContents();
         this.title = requestDto.getTitle();
         this.user = user;
+        this.username = username;
     }
 
 //    public void update(BoardRequestDto requestDto) {

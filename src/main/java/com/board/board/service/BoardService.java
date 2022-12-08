@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -50,11 +49,11 @@ public class BoardService {
             //User user = User타입의 user객체안에 userRepository.findByUsername(claims.getSubject())을 넣는다
 //            Product product = productRepository.saveAndFlush(new Product(requestDto, user.getId()));
             // 요청받은 DTO 로 DB에 저장할 객체 만들기
-            Board board = new Board(requestDto,user);
+            Board board = new Board(requestDto,user,user.getUsername());
                 //board - contents title username password id
 
             boardRepository.save(board);
-            return new BoardResponseDto(board, user.getUsername());
+            return new BoardResponseDto(board);
         } else {
             return null;
         }
@@ -64,7 +63,10 @@ public class BoardService {
     //전체 조회
     @Transactional(readOnly = true)
     public List<BoardResponseDto> getBoardlist() {
-        return boardRepository.findAllByOrderByModifiedAtDesc();
+        List<BoardResponseDto> boards =boardRepository.findAllByOrderByModifiedAtDesc();
+
+
+        return boards;
     }
 
     //업데이트
