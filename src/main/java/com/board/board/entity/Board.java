@@ -1,6 +1,7 @@
 package com.board.board.entity;
 
 import com.board.board.dto.BoardRequestDto;
+import com.board.board.dto.BoardUpdateRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,8 +22,10 @@ public class Board extends Timestamped{
     @Column(nullable = false)
     private String contents;   // 필드값
 
-    @Column(nullable = false)
-    private String username;
+//    @Column(nullable = false)
+//    private String username;
+
+
     @Column(nullable = false)
     private String title;      //필드값
     @ManyToOne
@@ -30,13 +33,16 @@ public class Board extends Timestamped{
     private User user;
 
 
-    public Board(BoardRequestDto requestDto,User user,String username) { //requestDto생성자의 요소
+    public Board(BoardRequestDto requestDto,User user) { //requestDto생성자의 요소
         this.contents = requestDto.getContents();
         this.title = requestDto.getTitle();
         this.user = user;
-        this.username = username;
+//        this.username = username;
     }
-
+    public void update(BoardUpdateRequestDto requestDto) {
+        this.contents = requestDto.getContents();
+        this.title = requestDto.getTitle();
+    }
 //    public void update(BoardRequestDto requestDto) {
 ////        this.username = requestDto.getUsername();
 //        this.contents = requestDto.getContents();

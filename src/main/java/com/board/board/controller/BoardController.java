@@ -2,6 +2,7 @@ package com.board.board.controller;
 
 import com.board.board.dto.BoardRequestDto;
 import com.board.board.dto.BoardResponseDto;
+import com.board.board.dto.BoardUpdateRequestDto;
 import com.board.board.entity.Board;
 import com.board.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -29,10 +30,10 @@ public class BoardController {
         return boardService.getBoardlist();
     }
     //업데이트
-//    @PutMapping("/board/{id}")
-//    public BoardResponseDto updateBoard(@PathVariable Long id,@RequestBody BoardRequestDto requestDto){
-//        return boardService.updateBoard(id,requestDto);
-//    }
+    @PutMapping("/board/{id}")
+    public BoardResponseDto updateBoard(@PathVariable Long id, @RequestBody BoardUpdateRequestDto requestDto, HttpServletRequest request){
+        return boardService.updateBoard(id,requestDto,request);
+    }
 //    //삭제
 //    @DeleteMapping("/board/{id}")
 //    public String deleteBoard(@PathVariable Long id,@RequestBody BoardRequestDto requestDto){
