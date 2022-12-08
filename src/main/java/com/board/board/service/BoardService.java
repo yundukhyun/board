@@ -3,6 +3,7 @@ package com.board.board.service;
 import com.board.board.dto.BoardRequestDto;
 import com.board.board.dto.BoardResponseDto;
 import com.board.board.dto.BoardUpdateRequestDto;
+import com.board.board.dto.MsgResponseDto;
 import com.board.board.entity.Board;
 import com.board.board.entity.User;
 import com.board.board.jwt.JwtUtil;
@@ -10,6 +11,7 @@ import com.board.board.repository.BoardRepository;
 import com.board.board.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -106,25 +108,40 @@ public class BoardService {
         }
     }
 
+    @Transactional
+    public MsgResponseDto deleteBoard(Long id, HttpServletRequest request) {
+        String token = jwtUtil.resolveToken(request);
+        //jwtUtil에 있는 resolveToken메서드를 돌리고 값을 request를 준다. 토큰을 가져오는 메서드
+        //그값을 token에 준다
+        // 토큰이 있는 경우에만 관심상품 추가 가능
+        Claims claims;
+        if (token != null) {//token이 null이아닐때
+            if (jwtUtil.validateToken(token)) { //validateToken메서드를 실행한다.  토큰을 검증하는 단계
+                // 토큰에서 사용자 정보 가져오기
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new IllegalArgumentException("Token Error");
+            }
+            // 토큰에서 가져온 사용자 정보를 사용하여 DB 조회
+            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+                    //토큰안에 있는 유저네임
+                    () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
+            );
 
-    //    //
-//    @Transactional
-//    public String deleteBoard(Long id,BoardRequestDto requestDto) {
-//        Board board = boardRepository.findById(id).orElseThrow(
-//                () -> new IllegalArgumentException("없는글입니다.")
-//        );
-//        boolean passwordTrue = requestDto.getPassword().equals(board.getPassword());
-//        String a = "";
-//        if(passwordTrue){
-//            boardRepository.deleteById(id);
-//            a= "삭제완료";
-//        }else{
-//            a = "비밀번호를 확인해주세요";
-//        }
-//
-//        return a;
-//    }
-    //선택한 게시글 불러오기
+            Board board = boardRepository.findById(id).orElseThrow(
+                    () -> new IllegalArgumentException("없는글입니다.")
+            );
+            if (board.getUser().getUsername().equals(user.getUsername())) {
+                boardRepository.deleteById(id);
+            } else {
+                throw new IllegalArgumentException("자기글만 수정가능합니다.");
+            }
+            return new MsgResponseDto("삭제성공",HttpStatus.OK.value());
+        } else {
+            throw new IllegalArgumentException("토큰이 없습니다.");
+        }
+    }
+
     @Transactional(readOnly = true)
     public BoardResponseDto selectMemo(Long id) {
         Board board = boardRepository.findById(id).orElseThrow(
