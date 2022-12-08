@@ -13,9 +13,6 @@ public class BoardResponseDto {
     private String username;
     private String contents;
     private String title;
-//    private String password;
-     
-
     private LocalDateTime createdAt;
 
     private LocalDateTime modifiedAt;

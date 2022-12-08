@@ -102,11 +102,12 @@ public class BoardService {
 //
 //        return a;
 //    }
-//    @Transactional(readOnly = true)
-//    public BoardResponseDto selectMemo(Long id) {
-//        Board board = boardRepository.findById(id).orElseThrow(
-//                () -> new IllegalArgumentException("없는글입니다.")
-//        );
-//        return new BoardResponseDto(board);
-//    }
+    //선택한 게시글 불러오기
+    @Transactional(readOnly = true)
+    public BoardResponseDto selectMemo(Long id) {
+        Board board = boardRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("없는글입니다.")
+        );
+        return new BoardResponseDto(board);
+    }
 }

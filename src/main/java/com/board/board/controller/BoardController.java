@@ -38,11 +38,10 @@ public class BoardController {
 //    public String deleteBoard(@PathVariable Long id,@RequestBody BoardRequestDto requestDto){
 //        return boardService.deleteBoard(id,requestDto);
 //    }
-    //아이디에 따른 조회
-//    @GetMapping("/board/{id}")
-//    public BoardResponseDto selectMemo(@PathVariable Long id) {
-//        return boardService.selectMemo(id);
-//    }
+    @GetMapping("/board/{id}")
+    public BoardResponseDto selectMemo(@PathVariable Long id) {
+        return boardService.selectMemo(id);
+    }
 }
 
 
